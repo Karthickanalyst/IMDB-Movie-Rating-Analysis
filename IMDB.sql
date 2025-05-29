@@ -37,7 +37,7 @@ order by released_year,released_month;
 #4. How many movies were produced in either the USA or India in the year 2019?
 select COUNT(*)  as produced_movies
 from movie 
-where country like'usa'
+where country in ('usa','india')
 and year = 2019;
 
 #5. List the unique genres in the dataset, and count how many movies belong exclusively to one genre.
@@ -111,15 +111,17 @@ order by median_rating ;
 
 
 
+
 #12. How many movies, released in March 2017 in the USA within a specific genre, had more than 1,000 votes?
 
-select count(distinct m.id) as released_movies
+select g.genre ,count(distinct m.id) as released_movies
 from movie m
 join genre g on m.id = g.movie_id
 join ratings r on m.id = r.movie_id
 where m.country like '%USA%'
 and month(m.date_published) = 3 and year(m.date_published) = 2017
-and r.total_votes > 1000;
+and r.total_votes > 1000
+group by g.genre ;
 
 
 
@@ -142,8 +144,8 @@ where m.date_published between '2018-04-01' and '2019-04-01'and r.median_rating 
 
 #15. Do German movies receive more votes on average than Italian movies?
 
-select avg(case when m.country like '%Germany%' then r.total_votes end) as avg_votes_germany,
-avg(case when m.country like '%Italy%' then r.total_votes end) as avg_votes_italy 
+select avg(case when m.languages like '%German%' then r.total_votes end) as avg_votes_german,
+avg(case when m.languages like '%Italian%' then r.total_votes end) as avg_votes_italian 
 from movie m
 join ratings r on m.id = r.movie_id;
 
@@ -233,7 +235,7 @@ select m.title, g.genre, m.production_company, m.duration
 from movie m
 join genre g on m.id = g.movie_id
 order by m.duration desc
-limit 1;
+limit 2;
 
 
 #24. Determine the total number of votes for each movie released in 2018.
